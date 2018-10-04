@@ -1,0 +1,80 @@
+#importing all packages
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+#importing main csv file on to python
+data=pd.read_csv('C:/Users/taran/OneDrive/Desktop/archive.csv')
+data.head()
+data.shape
+#Splitting into training and testing dataset
+y=data['CO2Useason_adjusted'].values
+x=data.drop('CO2Useason_adjusted', axis=1)
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2)
+#Exporting dataset to csv(test)
+res=x_test
+my_df=pd.DataFrame(res)
+my_df.to_csv('test.csv', index=False, header=False)
+my_df.shape
+#Exporting dataset to csv(train)
+res=x_train
+my_df=pd.DataFrame(res)
+my_df.to_csv('train.csv', index=False, header=False)
+my_df.shape
+
+
+#Importing training dataset
+data=pd.read_csv('C:/Users/taran/OneDrive/Desktop/train.csv')
+data.shape
+data.head()
+X=data['Decimaldate'].values
+Y=data['CO2_Final'].values
+#Calculating slope parameter and intercept[b1, b0]
+mean_X=np.mean(X)
+mean_Y=np.mean(Y)
+m=len(X)
+num=0
+den=0
+for i in range(m):
+	   num+=(X[i] - mean_X) * (Y[i] - mean_Y)
+	   den+=(X[i] - mean_X) ** 2
+b1=num/den
+b0=mean_Y-(b1*mean_X)
+print(b1, b0)
+#Using values of b1 and b0 to find rmse
+data=pd.read_csv('C:/Users/taran/OneDrive/Desktop/test.csv')
+X=data['Decimaldate'].values
+Y=data['CO2_Final'].values
+mean_X=np.mean(X)
+mean_Y=np.mean(Y)
+m=len(X)
+rmse = 0
+for i in range(m):
+    y_pred = b0 + b1 * X[i]
+    rmse += (Y[i] - y_pred) ** 2
+rmse = np.sqrt(rmse/m)
+print(rmse)
+ss_t = 0
+ss_r = 0
+#Finding R^2
+for i in range(m):
+    y_pred = b0 + b1 * X[i]
+    ss_t += (Y[i] - mean_Y) ** 2
+    ss_r += (Y[i] - y_pred) ** 2
+r2 = 1 - (ss_r/ss_t)
+print(r2)s
+#Plotting graph using matplotlib
+max_x = np.max(X)+10
+min_x = np.min(X)-10
+x = np.linspace(min_x, max_x, 50)
+y = b0 + b1 * x
+#Ploting Line
+plt.plot(x, y, color='#58b970', label='Regression Line')
+#Ploting Scatter Points
+plt.scatter(X, Y, c='#ef5423', label='Scatter Plot')
+plt.xlabel('Decimal Date')
+plt.ylabel('CO2')
+plt.legend()
+plt.show()
+
