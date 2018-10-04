@@ -1,2 +1,2 @@
-# Machine-learning
-Different types of regression analysis along with an implementation of Convolutional neural networks
+# Simple linear regression
+Implementation of simple lineaar regression from scratch on keeling curve dataset
